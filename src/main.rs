@@ -1,9 +1,9 @@
 use bevy::{
-    ecs::query,
     gltf::Gltf,
     pbr::{CascadeShadowConfigBuilder, DirectionalLightShadowMap},
     prelude::*,
 };
+use bevy_egui::{egui, EguiContexts, EguiPlugin};
 
 #[derive(Resource)]
 struct ModelToSpawn(Handle<Gltf>);
@@ -57,6 +57,12 @@ fn spawn_gltf_objects(
     }
 }
 
+fn ui_example_system(mut contexts: EguiContexts) {
+    egui::Window::new("Hello").show(contexts.ctx_mut(), |ui| {
+        ui.label("world");
+    });
+}
+
 fn main() {
     App::new()
         .insert_resource(AmbientLight {
@@ -65,7 +71,9 @@ fn main() {
         })
         .insert_resource(DirectionalLightShadowMap { size: 4096 })
         .add_plugins(DefaultPlugins)
+        .add_plugins(EguiPlugin)
         .add_systems(Startup, setup)
         .add_systems(Update, spawn_gltf_objects)
+        .add_systems(Update, ui_example_system)
         .run();
 }
