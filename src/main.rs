@@ -57,9 +57,10 @@ fn spawn_gltf_objects(
     }
 }
 
-fn ui_example_system(mut contexts: EguiContexts) {
-    egui::Window::new("Hello").show(contexts.ctx_mut(), |ui| {
-        ui.label("world");
+fn update_ambient_light(mut contexts: EguiContexts, mut ambient_light: ResMut<AmbientLight>) {
+    egui::Window::new("Light").show(contexts.ctx_mut(), |ui| {
+        ui.heading("Ambient Light");
+        ui.add(egui::Slider::new(&mut ambient_light.brightness, 0.0..=1.0).text("brightness"));
     });
 }
 
@@ -74,6 +75,6 @@ fn main() {
         .add_plugins(EguiPlugin)
         .add_systems(Startup, setup)
         .add_systems(Update, spawn_gltf_objects)
-        .add_systems(Update, ui_example_system)
+        .add_systems(Update, update_ambient_light)
         .run();
 }
