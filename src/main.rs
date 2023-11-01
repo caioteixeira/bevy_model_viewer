@@ -57,10 +57,35 @@ fn spawn_gltf_objects(
     }
 }
 
-fn update_ambient_light(mut contexts: EguiContexts, mut ambient_light: ResMut<AmbientLight>) {
+fn update_light_settings(mut contexts: EguiContexts, mut ambient_light: ResMut<AmbientLight>) {
     egui::Window::new("Light").show(contexts.ctx_mut(), |ui| {
         ui.heading("Ambient Light");
         ui.add(egui::Slider::new(&mut ambient_light.brightness, 0.0..=1.0).text("brightness"));
+
+        let [r, g, b, a] = ambient_light.color.as_rgba_f32();
+        let mut egui_color: egui::Rgba = egui::Rgba::from_srgba_unmultiplied(
+            (r * 255.0) as u8,
+            (g * 255.0) as u8,
+            (b * 255.0) as u8,
+            (a * 255.0) as u8,
+        );
+
+        if egui::widgets::color_picker::color_edit_button_rgba(
+            ui,
+            &mut egui_color,
+            egui::color_picker::Alpha::Opaque,
+        )
+        .changed()
+        {
+            let [r, g, b, a] = egui_color.to_srgba_unmultiplied();
+            ambient_light.color = [
+                r as f32 / 255.0,
+                g as f32 / 255.0,
+                b as f32 / 255.0,
+                a as f32 / 255.0,
+            ]
+            .into();
+        }
     });
 }
 
@@ -75,6 +100,6 @@ fn main() {
         .add_plugins(EguiPlugin)
         .add_systems(Startup, setup)
         .add_systems(Update, spawn_gltf_objects)
-        .add_systems(Update, update_ambient_light)
+        .add_systems(Update, update_light_settings)
         .run();
 }
