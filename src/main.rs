@@ -4,15 +4,20 @@ use bevy::{
     prelude::*,
 };
 use bevy_egui::{egui, EguiContexts, EguiPlugin};
+use bevy_flycam::prelude::*;
 
 #[derive(Resource)]
 struct ModelToSpawn(Handle<Gltf>);
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn((Camera3dBundle {
-        transform: Transform::from_xyz(0.7, 0.7, 1.0).looking_at(Vec3::new(0.0, 0.3, 0.0), Vec3::Y),
-        ..default()
-    },));
+    commands.spawn((
+        Camera3dBundle {
+            transform: Transform::from_xyz(0.7, 0.7, 1.0)
+                .looking_at(Vec3::new(0.0, 0.3, 0.0), Vec3::Y),
+            ..default()
+        },
+        FlyCam,
+    ));
 
     commands.spawn(DirectionalLightBundle {
         directional_light: DirectionalLight {
@@ -91,13 +96,18 @@ fn update_light_settings(mut contexts: EguiContexts, mut ambient_light: ResMut<A
 
 fn main() {
     App::new()
+        .add_plugins(DefaultPlugins)
+        .add_plugins(EguiPlugin)
+        .add_plugins(NoCameraPlayerPlugin)
+        .insert_resource(MovementSettings {
+            sensitivity: 0.00015, // default: 0.00012
+            speed: 7.0,           // default: 12.0
+        })
         .insert_resource(AmbientLight {
             color: Color::WHITE,
             brightness: 0.3,
         })
         .insert_resource(DirectionalLightShadowMap { size: 4096 })
-        .add_plugins(DefaultPlugins)
-        .add_plugins(EguiPlugin)
         .add_systems(Startup, setup)
         .add_systems(Update, spawn_gltf_objects)
         .add_systems(Update, update_light_settings)
