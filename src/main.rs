@@ -19,6 +19,24 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         FlyCam,
     ));
 
+    commands.spawn(
+        TextBundle::from_section(
+            "WASD : Move\nSpace: Ascend\nLeft Shift: Descend\nEsc: Grab/release cursor",
+            TextStyle {
+                font_size: 20.0,
+                color: Color::WHITE,
+                ..default()
+            },
+        )
+        .with_text_alignment(TextAlignment::Left)
+        .with_style(Style {
+            position_type: PositionType::Absolute,
+            bottom: Val::Px(5.0),
+            left: Val::Px(15.0),
+            ..default()
+        }),
+    );
+
     commands.spawn(DirectionalLightBundle {
         directional_light: DirectionalLight {
             shadows_enabled: true,
