@@ -9,6 +9,7 @@ edition = "2021"
 bevy = "0.11.3"
 bevy_egui = "0.22.0"
 bevy_flycam = "0.11.0"
+walkdir = "2.4.0"
 
 [workspace]
 resolver = "2" # wgpu / bevy needs this
