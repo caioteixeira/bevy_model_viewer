@@ -80,8 +80,7 @@ fn populate_list_of_models(mut model_paths: ResMut<ModelPaths>) {
                     path.display()
                         .to_string()
                         .trim_start_matches("assets/")
-                        .replace("\\", "/")
-                        .to_string(),
+                        .replace("\\", "/"),
                 );
             }
         }
@@ -124,7 +123,7 @@ fn spawn_gltf_objects(
             info!("Despawning scene");
             commands.entity(scene).despawn_recursive();
 
-            //TODO: Check how to unload assets of the previous scene
+            //TODO: Check how to unload assets of the previous
         }
 
         // Load new scenes
