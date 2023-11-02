@@ -1,5 +1,3 @@
-use std::fs;
-
 use bevy::{
     gltf::Gltf,
     pbr::{CascadeShadowConfigBuilder, DirectionalLightShadowMap},
@@ -76,16 +74,14 @@ fn populate_list_of_models(mut model_paths: ResMut<ModelPaths>) {
     for entry in walkdir {
         let entry = entry.unwrap();
         let path = entry.path();
-        if path.is_file() {
-            if path.extension().unwrap() == "gltf" {
-                info!("{}", path.display());
-                model_paths.paths.push(
-                    path.display()
-                        .to_string()
-                        .trim_start_matches("assets/")
-                        .replace("\\", "/"),
-                );
-            }
+        if path.is_file() && path.extension().unwrap() == "gltf" {
+            info!("{}", path.display());
+            model_paths.paths.push(
+                path.display()
+                    .to_string()
+                    .trim_start_matches("assets/")
+                    .replace('\\', "/"),
+            );
         }
     }
 }
