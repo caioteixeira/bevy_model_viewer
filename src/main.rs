@@ -4,7 +4,9 @@ use bevy::{
     gltf::Gltf,
     pbr::{CascadeShadowConfigBuilder, DirectionalLightShadowMap},
     prelude::*,
+    render::view::screenshot::ScreenshotManager,
     scene::SceneInstance,
+    window::PrimaryWindow,
 };
 use bevy_egui::{egui, EguiContexts, EguiPlugin};
 use bevy_flycam::prelude::*;
@@ -30,7 +32,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 
     commands.spawn(
         TextBundle::from_section(
-            "WASD : Move\nSpace: Ascend\nLeft Shift: Descend\nEsc: Grab/release cursor",
+            "WASD : Move\nSpace: Ascend\nLeft Shift: Descend\nEsc: Grab/release cursor\nP: Take screenshot",
             TextStyle {
                 font_size: 20.0,
                 color: Color::WHITE,
@@ -123,7 +125,7 @@ fn spawn_gltf_objects(
             info!("Despawning scene");
             commands.entity(scene).despawn_recursive();
 
-            //TODO: Check how to unload assets of the previous
+            //TODO: Check how to unload assets of the previous scene
         }
 
         // Load new scenes
@@ -172,6 +174,18 @@ fn update_light_settings(mut contexts: EguiContexts, mut ambient_light: ResMut<A
     });
 }
 
+fn save_screenshot(
+    input: Res<Input<KeyCode>>,
+    main_window: Query<Entity, With<PrimaryWindow>>,
+    mut screenshot_manager: ResMut<ScreenshotManager>,
+) {
+    if input.just_pressed(KeyCode::P) {
+        screenshot_manager
+            .save_screenshot_to_disk(main_window.single(), "screenshot.png")
+            .unwrap();
+    }
+}
+
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
@@ -192,5 +206,6 @@ fn main() {
         .add_systems(Update, show_list_of_models)
         .add_systems(Update, spawn_gltf_objects)
         .add_systems(Update, update_light_settings)
+        .add_systems(Update, save_screenshot)
         .run();
 }
