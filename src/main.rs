@@ -10,6 +10,7 @@ use bevy::{
 };
 use bevy_egui::{egui, EguiContexts, EguiPlugin};
 use bevy_flycam::prelude::*;
+use rfd::FileDialog;
 use walkdir::WalkDir;
 
 #[derive(Resource)]
@@ -62,7 +63,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         ..default()
     });
 
-    let path = "models/AntiqueCamera/glTF/AntiqueCamera.gltf";
+    let path = "models/FlightHelmet/FlightHelmet.gltf";
     info!("Loading {}", path);
     let gltf: Handle<Gltf> = asset_server.load(path);
     commands.insert_resource(ModelToSpawn(gltf));
@@ -180,9 +181,20 @@ fn save_screenshot(
     mut screenshot_manager: ResMut<ScreenshotManager>,
 ) {
     if input.just_pressed(KeyCode::P) {
-        screenshot_manager
-            .save_screenshot_to_disk(main_window.single(), "screenshot.png")
-            .unwrap();
+        let path = FileDialog::new()
+            .add_filter("PNG Image", &["png"])
+            .set_file_name("screenshot.png")
+            .save_file();
+
+        match path {
+            Some(target_path) => {
+                info!("Saving screenshot to {}", target_path.to_str().unwrap());
+                screenshot_manager
+                    .save_screenshot_to_disk(main_window.single(), target_path)
+                    .unwrap();
+            }
+            None => info!("Screenshot cancelled"),
+        };
     }
 }
 

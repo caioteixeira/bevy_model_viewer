@@ -9,6 +9,7 @@ edition = "2021"
 bevy = "0.11.3"
 bevy_egui = "0.22.0"
 bevy_flycam = "0.11.0"
+rfd = "0.12.1"
 walkdir = "2.4.0"
 
 [workspace]
