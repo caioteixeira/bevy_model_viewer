@@ -28,5 +28,5 @@ jobs:
     - name: Save artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: my-artifact-${{ matrix.os }}
+        name: bevy-model-viewer-${{ matrix.os }}
         path: target/release/*
