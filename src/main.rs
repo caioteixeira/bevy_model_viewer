@@ -93,7 +93,7 @@ fn show_list_of_models(
     model_paths: Res<ModelPaths>,
 ) {
     egui::Window::new("Models").show(contexts.ctx_mut(), |ui| {
-        ui.heading("Models");
+        ui.heading("Click on a model name to load it");
 
         for path in model_paths.paths.iter() {
             if ui.button(path).clicked() {
